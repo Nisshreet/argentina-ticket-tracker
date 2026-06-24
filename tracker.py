@@ -1,8 +1,10 @@
+import os
 import csv
 from datetime import datetime
 from config import TARGET_PRICE, URLS
 from telegram_notification import send_telegram
 from sites.generic_site import get_lowest_price
+
 
 now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -18,11 +20,19 @@ for site, url in URLS.items():
 
     print(f"{site}: {lowest}")
 
-    if lowest:
-        with open("data/price_history.csv", "a", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerow([now, site, lowest])
+ if lowest:
+    os.makedirs("data", exist_ok=True)
 
+    if not os.path.exists("data/price_history.csv"):
+        with open("data/price_history.csv", "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(["timestamp", "site", "price"])
+
+    with open("data/price_history.csv", "a", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow([now, site, lowest])
+
+    
 valid_prices = {site: price for site, price in prices.items() if price is not None}
 
 if valid_prices:
