@@ -39,24 +39,16 @@ if valid_prices:
 
     print("Cheapest:", cheapest_site, cheapest_price)
 
+if cheapest_price <= TARGET_PRICE:
     message = (
-        "📊 Hourly Ticket Update\n\n"
-        "Argentina vs Jordan\n\n"
+        "🚨 PRICE ALERT 🚨\n\n"
+        f"Argentina vs Jordan\n\n"
         f"Cheapest Price: ${cheapest_price}\n"
-        f"Cheapest Website: {cheapest_site}\n"
-        f"Target: ${TARGET_PRICE}\n\n"
-        "All Websites:\n"
+        f"Website: {cheapest_site}\n"
+        f"Target: ${TARGET_PRICE}"
     )
 
-    for site, price in prices.items():
-        url = URLS.get(site, "")
-
-        if price is None:
-            message += f"\n❌ {site}: Not available\n{url}\n"
-        else:
-            message += f"\n✅ {site}: ${price}\n{url}\n"
-
     send_telegram(message)
-    print("Telegram update sent.")
+    print("Price alert sent.")
 else:
-    print("No valid prices found.")
+    print("No alert.")
