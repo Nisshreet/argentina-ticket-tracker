@@ -1,5 +1,4 @@
 .env
 __pycache__/
 *.pyc
-data/price_history.csv
 notification_log.csv
