@@ -1,4 +1,3 @@
-import os
 import csv
 from datetime import datetime
 from config import TARGET_PRICE, URLS
@@ -20,13 +19,6 @@ for site, url in URLS.items():
     print(f"{site}: {lowest}")
 
     if lowest:
-        os.makedirs("data", exist_ok=True)
-
-        if not os.path.exists("data/price_history.csv"):
-            with open("data/price_history.csv", "w", newline="") as f:
-                writer = csv.writer(f)
-                writer.writerow(["timestamp", "site", "price"])
-
         with open("data/price_history.csv", "a", newline="") as file:
             writer = csv.writer(file)
             writer.writerow([now, site, lowest])
@@ -39,23 +31,22 @@ if valid_prices:
 
     print("Cheapest:", cheapest_site, cheapest_price)
 
-    if cheapest_price <= TARGET_PRICE:
-        message = f"""🚨 Argentina Ticket Alert
+message = (
+    "📊 Hourly Ticket Update\n\n"
+    "Argentina vs Jordan\n\n"
+    f"Cheapest Price: ${cheapest_price}\n"
+    f"Cheapest Website: {cheapest_site}\n"
+    f"Target: ${TARGET_PRICE}\n\n"
+    "All Websites:\n"
+)
 
-🇦🇷 Argentina vs Jordan
+for site, price in prices.items():
+    url = URLS.get(site, "")
 
-💰 Cheapest Price: ${cheapest_price}
-🌐 Website: {cheapest_site}
-🎯 Target: ${TARGET_PRICE}
-
-All prices:
-"""
-
-        for site, price in valid_prices.items():
-            message += f"{site}: ${price}\n"
-
-        send_telegram(message)
+    if price is None:
+        message += f"\n❌ {site}: Not available\n{url}\n"
     else:
-        print("No alert.")
-else:
-    print("No valid prices found.")
+        message += f"\n✅ {site}: ${price}\n{url}\n"
+
+send_telegram(message)
+print("Telegram update sent.")
