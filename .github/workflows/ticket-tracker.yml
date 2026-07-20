@@ -2,8 +2,8 @@ name: Ticket Tracker
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
-    - cron: "0 * * * *"
+    - cron: ""
+    - cron: ""
   workflow_dispatch:
 
 jobs:
