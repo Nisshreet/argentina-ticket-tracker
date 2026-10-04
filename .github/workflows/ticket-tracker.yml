@@ -2,8 +2,7 @@ name: Ticket Tracker
 
 on:
   schedule:
-    - cron: ""
-    - cron: ""
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -11,20 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - run: pip install pandas requests python-dotenv
+      - name: Install dependencies
+        run: pip install pandas requests python-dotenv
 
       - name: Run tracker
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          python tracker.py
-          if [ "$(date +%M)" = "00" ]; then
-            python send_hourly_update.py
-          fi
+        run: python tracker.py
